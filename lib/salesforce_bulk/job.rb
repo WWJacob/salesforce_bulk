@@ -106,20 +106,19 @@ module SalesforceBulk
 
       if(@@operation == "query") # The query op requires us to do another request to get the results
         response_parsed = XmlSimple.xml_in(response)
-        result_id = response_parsed["result"][0]
 
-        path = "job/#{@@job_id}/batch/#{@@batch_id}/result/#{result_id}"
-        headers = Hash.new
-        headers = Hash["Content-Type" => "text/xml; charset=UTF-8"]
-        #puts "path is: #{path}\n"
-        
-        response = @@connection.get_request(nil, path, headers)
-        #puts "\n\nres2: #{response.inspect}\n\n"
-
+        # Large data sets get split into multiple CSV files.
+        results_array = []
+        response_parsed["result"].each do |result_id|
+          path = "job/#{@@job_id}/batch/#{@@batch_id}/result/#{result_id}"
+          headers = Hash.new
+          headers = Hash["Content-Type" => "text/xml; charset=UTF-8"]
+          
+          results_array += @@connection.get_request(nil, path, headers).lines.to_a
+        end
       end
 
-      response = response.lines.to_a.join
-      csvRows = CSV.parse(response)[1..-1]
+      CSV.parse(results_array.join)[1..-1]
     end
 
   end
