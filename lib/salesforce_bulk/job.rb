@@ -118,8 +118,8 @@ module SalesforceBulk
 
       end
 
-      response = response.lines.to_a[1..-1].join
-      csvRows = CSV.parse(response)
+      response = response.lines.to_a.join
+      csvRows = CSV.parse(response)[1..-1]
     end
 
   end
