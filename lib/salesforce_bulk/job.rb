@@ -124,7 +124,7 @@ module SalesforceBulk
         end
       end
 
-      results_array[1..-1] # ignore headers
+      results_array
     end
 
   end
