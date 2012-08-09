@@ -1,3 +1,7 @@
+require 'rubygems'
+require 'bundler'
+require 'active_support/core_ext'
+
 module SalesforceBulk
 
   class Job
@@ -105,7 +109,9 @@ module SalesforceBulk
       response = @@connection.get_request(nil, path, headers)
 
       if(@@operation == "query") # The query op requires us to do another request to get the results
+        puts "Parsing XML response"
         response_parsed = XmlSimple.xml_in(response)
+        puts "Finished parsing XML response"
 
         # Large data sets get split into multiple CSV files.
         results_array = []
@@ -118,7 +124,7 @@ module SalesforceBulk
         end
       end
 
-      CSV.parse(results_array.join)[1..-1]
+      results_array[1..-1] # ignore headers
     end
 
   end
