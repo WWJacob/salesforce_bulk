@@ -66,12 +66,23 @@ module SalesforceBulk
     def get_request(host, path, headers)
       host = host || @@INSTANCE_HOST
       path = "#{@@PATH_PREFIX}#{path}"
+      puts path
 
       if host != @@LOGIN_HOST # Not login, need to add session id to header
         headers['X-SFDC-Session'] = @session_id;
       end
 
       https(host).get(path, headers).body
+    end
+
+    def get_result(host, path, headers)
+      host = host || @@INSTANCE_HOST
+      path = "#{@@PATH_PREFIX}#{path}"
+      output_path = "/tmp/#{path.split("/").last}.csv"
+
+      system("curl -H \"X-SFDC-Session: #{@session_id}\" https://#{@@INSTANCE_HOST}#{path} -o \"#{output_path}\"")
+
+      output_path
     end
 
     def https(host)

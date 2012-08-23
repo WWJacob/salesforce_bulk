@@ -1,7 +1,3 @@
-require 'rubygems'
-require 'bundler'
-require 'active_support/core_ext'
-
 module SalesforceBulk
 
   class Job
@@ -114,17 +110,19 @@ module SalesforceBulk
         puts "Finished parsing XML response"
 
         # Large data sets get split into multiple CSV files.
-        results_array = []
+        result_filenames = []
         response_parsed["result"].each do |result_id|
           path = "job/#{@@job_id}/batch/#{@@batch_id}/result/#{result_id}"
           headers = Hash.new
           headers = Hash["Content-Type" => "text/xml; charset=UTF-8"]
           
-          results_array += @@connection.get_request(nil, path, headers).lines.to_a
+          result_filenames << @@connection.get_result(nil, path, headers)
         end
+
+        puts "Finished combining results"
       end
 
-      results_array
+      result_filenames
     end
 
   end
