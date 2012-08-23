@@ -66,7 +66,6 @@ module SalesforceBulk
     def get_request(host, path, headers)
       host = host || @@INSTANCE_HOST
       path = "#{@@PATH_PREFIX}#{path}"
-      puts path
 
       if host != @@LOGIN_HOST # Not login, need to add session id to header
         headers['X-SFDC-Session'] = @session_id;
