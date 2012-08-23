@@ -57,9 +57,8 @@ module SalesforceBulk
     end
 
     def add_batch()
-      keys = @@records.reduce({}) {|h,pairs| pairs.each {|k,v| (h[k] ||= []) << v}; h}.keys
-      headers = keys.to_csv
-      
+      keys = @@records.first.keys
+      headers = CSV.generate { |csv| csv << keys }
       output_csv = headers
 
       @@records.each do |r|
@@ -68,8 +67,7 @@ module SalesforceBulk
           fields.push(r[k])
         end
 
-        row_csv = fields.to_csv
-        output_csv += row_csv
+        output_csv += CSV.generate { |csv| csv << fields }
       end
 
       path = "job/#{@@job_id}/batch/"
