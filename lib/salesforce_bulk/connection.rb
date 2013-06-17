@@ -43,7 +43,7 @@ module SalesforceBulk
 
       @session_id = response_parsed['Body'][0]['loginResponse'][0]['result'][0]['sessionId'][0]
       @server_url = response_parsed['Body'][0]['loginResponse'][0]['result'][0]['serverUrl'][0]
-      @instance = parse_instance()
+      parse_instance()
 
       @@INSTANCE_HOST = "#{@instance}.salesforce.com"
     end
@@ -92,8 +92,8 @@ module SalesforceBulk
     end
 
     def parse_instance()
-      @server_url =~ /https:\/\/([a-z]{2,2}[0-9]{1,2})-api/
-      @instance = $~.captures[0]
+			@server_url =~ /https:\/\/([a-z]{2,2}[0-9]{1,2})/
+			@instance = $~.captures[0]
     end
 
   end
